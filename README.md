@@ -2,7 +2,9 @@
 
 ## Description
 
-A simple program, with the purpose of downgrading and upgrading GTA 5 to versions `1.24` / `1.27` / `1.29`
+A universal program, with the purpose of downgrading and upgrading GTA 5 to versions `1.24` / `1.27` / `1.29`
+
+* Works on Linux and Windows
 
 ## Getting started
 
