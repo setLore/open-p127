@@ -12,7 +12,7 @@ backed_up_update_size = int
 files = {
     'GTA5.exe':'GTA5.exe',
     'PlayGTAV.exe':'PlayGTAV.exe',
-    'update.rpf':'update/update.rpf',
+    'update/update.rpf':'update/update.rpf',
     'bink2w64.dll':'bink2w64.dll',
     'socialclub.dll':'socialclub.dll',
     'GFSDK_ShadowLib.win64.dll':'GFSDK_ShadowLib.win64.dll',
@@ -26,10 +26,6 @@ files = {
 sha124 = "d04e37f70bbfa7b4b202fcd9c8ae2a68b71e45f8ba95ce0c6f3cbd85169241c2"
 sha127 = "7b3c0053db37eca7c6cdd0ecd268882cdd5f693f416e5a8e97fd31de66324d04"
 sha129 = "35269ac593041043230e21db9e5b643e6182acbe65c0b42853ea61bf42ed199a"
-# update.rpf file sizes for the different patches
-size124 = 328273920
-size127 = 352569344
-size129 = 397256704
 
 #sha256 checksum func
 def sha256_checksum(filename, block_size=65536):
@@ -60,7 +56,6 @@ else:
     os.makedirs("p127/downgrade/1.24/update")
     os.makedirs("p127/downgrade/1.27/update")
     os.makedirs("p127/downgrade/1.29/update")
-    os.makedirs("p127/downgrade/general")
 
 ### BACKUPS ###
 
@@ -79,32 +74,33 @@ def backup():
         pass
 
 def upgrade(): # reverts to the original version(before downgrading)
-    shutil.copyfile("p127/upgrade/update/update.rpf", "update.rpf")
-    shutil.copyfile("p127/upgrade/PlayGTAV.exe", "PlayGTAV.exe")
-    shutil.copyfile("p127/upgrade/bink2w64.dll", "bink2w64.dll")
-    shutil.copyfile("p127/upgrade/socialclub.dll", "socialclub.dll")
-    shutil.copyfile("p127/upgrade/PlayGTAV.exe", "GTA5.exe")
+    if checkVersion() != "Not Downgraded":
+        for dest,origin in files.items():
+                shutil.copyfile(f"p127/upgrade/{origin}", dest)
+                print(f"reverting {origin}")
+    else: 
+        print("already upgraded")
 
 def downgrade_to_124(): # downgrades to version 1.24
-    shutil.copyfile("p127/downgrade/general/PlayGTAV.exe","PlayGTAV.exe")
-    shutil.copyfile("p127/downgrade/general/bink2w64.dll", "bink2w64.dll")
-    shutil.copyfile("p127/downgrade/1.24/update/update.rpf", "update/update.rpf")
-    shutil.copyfile("p127/downgrade/1.24/socialclub.dll", "socialclub.dll")
-    shutil.copyfile("p127/downgrade/1.24/GTA5.exe", "GTA5.exe")
+
+    if checkVersion() != "1.24":
+        for dest,origin in files.items():
+            shutil.copyfile(f"p127/downgrade/1.24/{origin}", dest)
+            print(f"downgraded {origin}")
 
 def downgrade_to_127(): # downgrades to version 1.27
-    shutil.copyfile("p127/downgrade/general/PlayGTAV.exe","PlayGTAV.exe")
-    shutil.copyfile("p127/downgrade/general/bink2w64.dll", "bink2w64.dll")
-    shutil.copyfile("p127/downgrade/1.27/update/update.rpf", "update/update.rpf")
-    shutil.copyfile("p127/downgrade/1.27/socialclub.dll", "socialclub.dll")
-    shutil.copyfile("p127/downgrade/1.27/GTA5.exe", "GTA5.exe")
+
+    if checkVersion() != "1.27":
+        for dest,origin in files.items():
+            shutil.copyfile(f"p127/downgrade/1.27/{origin}", dest)
+            print(f"downgraded {origin}")
 
 def downgrade_to_129(): # downgrades to version 1.29
-    shutil.copyfile("p127/downgrade/general/PlayGTAV.exe","PlayGTAV.exe")
-    shutil.copyfile("p127/downgrade/general/bink2w64.dll", "bink2w64.dll")
-    shutil.copyfile("p127/downgrade/1.29/update/update.rpf", "update/update.rpf")
-    shutil.copyfile("p127/downgrade/1.29/socialclub.dll", "socialclub.dll")
-    shutil.copyfile("p127/downgrade/1.29/GTA5.exe", "GTA5.exe")
+
+    if checkVersion() != "1.29":
+        for dest,origin in files.items():
+            shutil.copyfile(f"p127/downgrade/1.29/{origin}", dest)
+            print(f"downgraded {origin}")
 
 def menu():
     while True:
