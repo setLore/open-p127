@@ -1,6 +1,7 @@
 import os
 import hashlib
 import shutil
+import subprocess
 #try:
 #    import requests
 #except ImportError:
@@ -8,7 +9,6 @@ import shutil
 #    exit()
 
 reqFiles = {}
-currentVer = "Not Downgraded/Unknown"
 backed_up_update_size = int
 
 # sha256 checksums for GTA5.exe
@@ -37,8 +37,9 @@ def checkVersion():
     elif sha256_checksum('GTA5.exe') == sha129:
         return "1.29"
     else:
-        currentVer == "Not Downgraded/Unknown"
+        return "Not Downgraded/Unknown"
 checkVersion()
+
 #folder handling
 if os.path.exists("p127"):
     print("p127 folder exists")
@@ -55,7 +56,7 @@ else:
 #check if backup exists and if it doesnt, back up original non-downgraded files(kinda messy)
 
 def backup():
-    if currentVer == "Not Downgraded/Unknown":
+    if checkVersion() == "Not Downgraded/Unknown":
         original_update_size = os.path.getsize("update/update.rpf")
         if os.path.exists("p127/upgrade/update/update.rpf"):
             backed_up_update_size = os.path.getsize("p127/upgrade/update/update.rpf")
@@ -115,7 +116,34 @@ def downgrade_to_129(): # downgrades to version 1.29
     shutil.copyfile("p127/downgrade/1.29/socialclub.dll", "socialclub.dll")
     shutil.copyfile("p127/downgrade/1.29/GTA5.exe", "GTA5.exe")
 
+def menu():
+    while True:
+        print("\033[H\033[J")
+        backup()
+        print("-----------------------------------")
+        print(f"      OPEN-127 | STATUS: {checkVersion()}")
+        print("-----------------------------------")
+        print("1. Downgrade to 1.27")
+        print("2. Downgrade to 1.24")
+        print("3. Downgrade to 1.29")
+        print("4. Upgrade to original")
+        print("5. Exit")
+
+        choice = input("Make your choice: ")
+
+        if choice == '1':
+            downgrade_to_127()
+        elif choice == '2':
+            downgrade_to_124()
+        elif choice == '3':
+            downgrade_to_129()
+        elif choice == '4':
+            upgrade()
+        elif choice == '5':
+            break
+        else:
+            print("Invalid option selected.")
+
+menu()
 
 
-
-print(f"\nCurrent Version:{checkVersion()}")
