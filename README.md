@@ -2,7 +2,7 @@
 
 ## Description
 
-A simple program, with the purpose of managing and downgrading/upgrading GTA 5 to versions 1.24 / 1.27 / 1.29
+A simple program, with the purpose of downgrading and upgrading GTA 5 to versions `1.24` / `1.27` / `1.29`
 
 ## Getting started
 
@@ -13,11 +13,14 @@ A simple program, with the purpose of managing and downgrading/upgrading GTA 5 t
 
 ### Installing
 
-* Download the p127.py file and put it in the folder where your GTA 5 is installed
+* Download the p127.py file
+* Put the file in your GTA 5 installation directory
 
 ### Running the program
 
-* Open your terminal in the same folder as your p127.py and GTA 5 installation and run `python3 p127.py`
+* Open your terminal
+* Go to the directory of the program and GTA 5 using the `cd` command
+* Run `python3 p127.py`
 
 ## Authors
 
@@ -27,4 +30,4 @@ A simple program, with the purpose of managing and downgrading/upgrading GTA 5 t
 
 ## Acknowledgments
 
-WIP
+Heavily inspired by [Project 1.27](https://github.com/TwosHusbandS/Project-127)
