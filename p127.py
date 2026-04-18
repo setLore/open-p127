@@ -8,8 +8,19 @@ import subprocess
 #    print("requests library not found. run 'pip install requests' in your terminal.")
 #    exit()
 
-reqFiles = {}
 backed_up_update_size = int
+files = {
+    'GTA5.exe':'GTA5.exe',
+    'PlayGTAV.exe':'PlayGTAV.exe',
+    'update.rpf':'update/update.rpf',
+    'bink2w64.dll':'bink2w64.dll',
+    'socialclub.dll':'socialclub.dll',
+    'GFSDK_ShadowLib.win64.dll':'GFSDK_ShadowLib.win64.dll',
+    'launc.dll':'launc.dll',
+    'orig_socialclub.dll':'orig_socialclub.dll',
+    'ROSCrypto.dll':'ROSCrypto.dll',
+    'x64a.rpf':'x64a.rpf',
+}
 
 # sha256 checksums for GTA5.exe
 sha124 = "d04e37f70bbfa7b4b202fcd9c8ae2a68b71e45f8ba95ce0c6f3cbd85169241c2"
@@ -37,7 +48,7 @@ def checkVersion():
     elif sha256_checksum('GTA5.exe') == sha129:
         return "1.29"
     else:
-        return "Not Downgraded/Unknown"
+        return "Not Downgraded"
 checkVersion()
 
 #folder handling
@@ -56,34 +67,13 @@ else:
 #check if backup exists and if it doesnt, back up original non-downgraded files(kinda messy)
 
 def backup():
-    if checkVersion() == "Not Downgraded/Unknown":
-        original_update_size = os.path.getsize("update/update.rpf")
-        if os.path.exists("p127/upgrade/update/update.rpf"):
-            backed_up_update_size = os.path.getsize("p127/upgrade/update/update.rpf")
-        else:
-            shutil.copyfile("update/update.rpf","p127/upgrade/update/update.rpf")
-            print("backed up original")
-            backed_up_update_size = os.path.getsize("p127/upgrade/update/update.rpf")
-
-        if original_update_size == size124 or original_update_size == size127 or original_update_size == size129:
-            pass
-        elif original_update_size == backed_up_update_size:
-            print("backed up update.rpf matches current update.rpf")
-        elif original_update_size != backed_up_update_size:
-            shutil.copyfile("update/update.rpf","p127/upgrade/update/update.rpf")
-            print("backed up original")
-
-        print("backing up socialclub.dll")
-        shutil.copyfile("socialclub.dll","p127/upgrade/socialclub.dll")
-
-        print("backing up GTA5.exe")
-        shutil.copyfile("GTA5.exe", "p127/upgrade/GTA5.exe")
-
-        print("backing up bink2w64.dll")
-        shutil.copyfile("bink2w64.dll", "p127/upgrade/bink2w64.dll")
-
-        print("backing up PlayGTAV.exe")
-        shutil.copyfile("PlayGTAV.exe", "p127/upgrade/PlayGTAV.exe")
+    if checkVersion() == "Not Downgraded":
+        for origin,dest in files.items():
+            if os.path.exists(f"p127/upgrade/{dest}") and os.path.getsize(origin) == os.path.getsize(f"p127/upgrade/{dest}"):
+                print(f"{origin} already backed up.")
+            else:
+                shutil.copyfile(origin, f"p127/upgrade/{dest}")
+                print(f"backed up {origin}...")
     else:
         print("already downgraded, skipping backup")
         pass
@@ -118,7 +108,7 @@ def downgrade_to_129(): # downgrades to version 1.29
 
 def menu():
     while True:
-        print("\033[H\033[J")
+        subprocess.run("clear")
         backup()
         print("-----------------------------------")
         print(f"      OPEN-127 | STATUS: {checkVersion()}")
