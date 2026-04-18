@@ -104,7 +104,10 @@ def downgrade_to_129(): # downgrades to version 1.29
 
 def menu():
     while True:
-        subprocess.run("clear")
+        if os.name == "nt":
+            subprocess.run("cls", shell=True)
+        else:
+            subprocess.run("clear")
         backup()
         print("-----------------------------------")
         print(f"      OPEN-127 | STATUS: {checkVersion()}")
