@@ -2,13 +2,24 @@ import os
 import hashlib
 import shutil
 import subprocess
+import time
+try:
+    import customtkinter
+except ImportError:
+    print("customtkinter library not found. run 'pip3 install customtkinter' in your terminal")
+    exit()
 #try:
 #    import requests
 #except ImportError:
-#    print("requests library not found. run 'pip install requests' in your terminal.")
+#    print("requests library not found. run 'pip3 install requests' in your terminal.")
 #    exit()
 
-backed_up_update_size = int
+isBackedUp = False
+
+customtkinter.set_appearance_mode("dark")
+customtkinter.set_default_color_theme("blue")
+app = customtkinter.CTk()
+
 files = {
     'GTA5.exe':'GTA5.exe',
     'PlayGTAV.exe':'PlayGTAV.exe',
@@ -23,9 +34,9 @@ files = {
 }
 
 # sha256 checksums for GTA5.exe
-sha124 = "d04e37f70bbfa7b4b202fcd9c8ae2a68b71e45f8ba95ce0c6f3cbd85169241c2"
-sha127 = "7b3c0053db37eca7c6cdd0ecd268882cdd5f693f416e5a8e97fd31de66324d04"
-sha129 = "35269ac593041043230e21db9e5b643e6182acbe65c0b42853ea61bf42ed199a"
+size124 = 51248008
+size127 = 55559560
+size129 = 54944648
 
 #sha256 checksum func
 def sha256_checksum(filename, block_size=65536):
@@ -37,15 +48,14 @@ def sha256_checksum(filename, block_size=65536):
 
 # check version func, returns version as string
 def checkVersion():
-    if sha256_checksum('GTA5.exe') == sha124:
+    if os.path.getsize("GTA5.exe") == size124:
         return "1.24"
-    elif sha256_checksum('GTA5.exe') == sha127:
+    elif os.path.getsize("GTA5.exe") == size127:
         return "1.27"
-    elif sha256_checksum('GTA5.exe') == sha129:
+    elif os.path.getsize("GTA5.exe") == size129:
         return "1.29"
     else:
         return "Not Downgraded"
-checkVersion()
 
 #folder handling
 if os.path.exists("p127"):
@@ -66,12 +76,14 @@ def backup():
         for origin,dest in files.items():
             if os.path.exists(f"p127/upgrade/{dest}") and os.path.getsize(origin) == os.path.getsize(f"p127/upgrade/{dest}"):
                 print(f"{origin} already backed up.")
+                isBackedUp = True
             else:
                 shutil.copyfile(origin, f"p127/upgrade/{dest}")
                 print(f"backed up {origin}...")
+                isBackedUp = True
     else:
-        print("already downgraded, skipping backup")
-        pass
+        print("downgraded, skipping backup")
+        isBackedUp = True
 
 def upgrade(): # reverts to the original version(before downgrading)
     if checkVersion() != "Not Downgraded":
@@ -133,6 +145,29 @@ def menu():
         else:
             print("Invalid option selected.")
 
-menu()
+#menu()
 
+app.title("open-p127")
+#app.iconbitmap("")
+app.geometry("600x400")
+To124Button = customtkinter.CTkButton(app, text="Downgrade to 1.24", height=35, width=150)
+To127Button = customtkinter.CTkButton(app, text="Downgrade to 1.27", height=35, width=150)
+To129Button = customtkinter.CTkButton(app, text="Downgrade to 1.29", height=35, width=150)
+versionLabel = customtkinter.CTkLabel(app, width=50, height=20, text=f"Current Version: {checkVersion()}")
+app.grid_rowconfigure(1, weight=1)
+app.grid_columnconfigure((0,1,2), weight = 1)
 
+if(checkVersion() == "Not Downgraded"):
+    To124Button.grid(row=2,column=0, pady=10,padx=5, sticky="ew")
+    To127Button.grid(row=2,column=1, pady=10,padx=5, sticky="ew")
+    To129Button.grid(row=2,column=2, pady=10,padx=5, sticky="ew")
+    versionLabel.configure(fg_color="red")
+    backup()
+elif checkVersion() == "1.24" or checkVersion() == "1.27" or checkVersion() == "1.29":
+    To124Button.grid(row=2,column=0, pady=10,padx=5, sticky="ew")
+    To127Button.grid(row=2,column=1, pady=10,padx=5, sticky="ew")
+    To129Button.grid(row=2,column=2, pady=10,padx=5, sticky="ew")
+    versionLabel.grid(row=0,column=1, pady=10,padx=5, sticky="ew")
+    versionLabel.configure(fg_color="green")
+    
+app.mainloop()
