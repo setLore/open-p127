@@ -11,7 +11,6 @@ A universal program, with the purpose of downgrading and upgrading GTA 5 to vers
 ### Dependencies
 
 * Python 3
-* The [requests](https://pypi.org/project/requests/) package(installed by running `pip3 install requests` in your terminal)
 * The [customtkinter](https://pypi.org/project/customtkinter/) package(installed by running `pip3 install customtkinter` in your terminal)
 
 ### Installing
