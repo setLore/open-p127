@@ -3,6 +3,7 @@ import hashlib
 import shutil
 import subprocess
 import time
+import threading
 try:
     import customtkinter
 except ImportError:
@@ -38,7 +39,7 @@ def checkDowngradeFiles():
     versions = ["1.24", "1.27", "1.29"]
     for v in versions:
         for f in files:
-            if os.path.exists("open127/"):
+            if os.path.exists(f"open127/downgrade/{v}/{f}"):
                 pass
             else:
                 print(f"file {f} not found?")
@@ -70,13 +71,14 @@ def backup():
     if checkVersion() == "Not Downgraded":
         for f in files:
             if os.path.exists(f"open127/upgrade/{f}") and os.path.getsize(f) == os.path.getsize(f"open127/upgrade/{f}"):
-                print(f"{f} already backed up.")
+                #print(f"{f} already backed up.")
+                pass
             else:
                 shutil.copyfile(f, f"open127/upgrade/{f}")
                 print(f"backed up {f}...")
         isBackedUp = True
     else:
-        return "downgraded, skipping backup"
+        print("downgraded, skipping backup")
 
 def upgrade(): # reverts to the fal version(before downgrading)
     if checkVersion() != "Not Downgraded":
@@ -110,27 +112,35 @@ def downgrade_to_129(): # downgrades to version 1.29
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
     
+def run_threaded(func):
+    threading.Thread(target=func, daemon=True).start()
 
 app.title("open127")
 #app.iconbitmap("")
 app.geometry("600x400")
-To124Button = customtkinter.CTkButton(app, text="Downgrade to 1.24", height=35, width=150, command=downgrade_to_124)
-To127Button = customtkinter.CTkButton(app, text="Downgrade to 1.27", height=35, width=150, command=downgrade_to_127)
-To129Button = customtkinter.CTkButton(app, text="Downgrade to 1.29", height=35, width=150, command=downgrade_to_129)
-UpgradeButton = customtkinter.CTkButton(app, text="Upgrade" , height=35, width=150, command=upgrade)
+To124Button = customtkinter.CTkButton(app, text="Downgrade to 1.24", height=35, width=150, command= lambda:run_threaded(downgrade_to_124))
+To127Button = customtkinter.CTkButton(app, text="Downgrade to 1.27", height=35, width=150, command= lambda:run_threaded(downgrade_to_127))
+To129Button = customtkinter.CTkButton(app, text="Downgrade to 1.29", height=35, width=150, command= lambda:run_threaded(downgrade_to_129))
+UpgradeButton = customtkinter.CTkButton(app, text="Upgrade" , height=35, width=150, command=lambda:run_threaded(upgrade))
 versionLabel = customtkinter.CTkLabel(app, text=f"Current Version: {checkVersion()}", corner_radius=5)
+loadingBar = customtkinter.CTkProgressBar(app, mode="indeterminate", height=20)
 app.grid_rowconfigure(1, weight=1)
 app.grid_columnconfigure((0,1,2), weight = 1)
 
-To124Button.grid(row=2,column=0, pady=10,padx=5, sticky="ew")
-To127Button.grid(row=2,column=1, pady=10,padx=5, sticky="ew")
-To129Button.grid(row=2,column=2, pady=10,padx=5, sticky="ew")
+To124Button.grid(row=3,column=0, pady=10,padx=5, sticky="ew")
+To127Button.grid(row=3,column=1, pady=10,padx=5, sticky="ew")
+To129Button.grid(row=3,column=2, pady=10,padx=5, sticky="ew")
+UpgradeButton.grid(row=3,column=3, pady=10,padx=5, sticky="ew")
+
+loadingBar.grid(row=2, sticky="ew", columnspan=5)
+loadingBar.start()
+
 versionLabel.grid(row=0,column=0, pady=10,padx=5, sticky="ew", columnspan=4)
-UpgradeButton.grid(row=2,column=3, pady=10,padx=5, sticky="ew")
 versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red")
 
-
-#print(handleDir())
-#backup()
-#app.mainloop()
-checkDowngradeFiles()
+run_threaded(handleDir)
+time.sleep(0.01)
+run_threaded(backup)
+time.sleep(0.01)
+run_threaded(checkDowngradeFiles)
+app.mainloop()

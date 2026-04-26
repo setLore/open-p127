@@ -1,4 +1,4 @@
-# open-p127
+# open127
 
 ## Description
 
