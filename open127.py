@@ -79,6 +79,7 @@ def backup():
         isBackedUp = True
     else:
         print("downgraded, skipping backup")
+    print("safe to exit.")
 
 def upgrade(): # reverts to the fal version(before downgrading)
     if checkVersion() != "Not Downgraded":
@@ -88,6 +89,7 @@ def upgrade(): # reverts to the fal version(before downgrading)
     else: 
         return "already upgraded"
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
+    print("safe to exit.")
 
 def downgrade_to_124(): # downgrades to version 1.24
     if checkVersion() != "1.24":
@@ -95,14 +97,15 @@ def downgrade_to_124(): # downgrades to version 1.24
             shutil.copyfile(f"open127/downgrade/1.24/{f}", f)
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
+    print("safe to exit.")
 
 def downgrade_to_127(): # downgrades to version 1.27
-
     if checkVersion() != "1.27":
         for f in files:
             shutil.copyfile(f"open127/downgrade/1.27/{f}", f)
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
+    print("safe to exit.")
 
 def downgrade_to_129(): # downgrades to version 1.29
 
@@ -111,7 +114,8 @@ def downgrade_to_129(): # downgrades to version 1.29
             shutil.copyfile(f"open127/downgrade/1.29/{f}", f)
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
-    
+    print("safe to exit.")
+
 def run_threaded(func):
     threading.Thread(target=func, daemon=True).start()
 
@@ -138,9 +142,9 @@ loadingBar.start()
 versionLabel.grid(row=0,column=0, pady=10,padx=5, sticky="ew", columnspan=4)
 versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red")
 
-run_threaded(handleDir)
+handleDir()
 time.sleep(0.01)
 run_threaded(backup)
 time.sleep(0.01)
-run_threaded(checkDowngradeFiles)
+checkDowngradeFiles()
 app.mainloop()
