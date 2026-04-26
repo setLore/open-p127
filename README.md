@@ -28,7 +28,7 @@ A universal program, with the purpose of downgrading and upgrading GTA 5 to vers
 
  Contributors names and contact info
 
-* setLore -> (Discord: setlore_)
+* setLore -> (Discord: `setlore_`)
 
 ## Acknowledgments
 
