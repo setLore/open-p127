@@ -68,6 +68,8 @@ def handleDir():
 #check if backup exists and if it doesnt, back up fal non-downgraded files(kinda messy)
 
 def backup():
+    config_buttons("disabled")
+    toggle_loading_bar(True)
     if checkVersion() == "Not Downgraded":
         for f in files:
             if os.path.exists(f"open127/upgrade/{f}") and os.path.getsize(f) == os.path.getsize(f"open127/upgrade/{f}"):
@@ -80,8 +82,12 @@ def backup():
     else:
         print("downgraded, skipping backup")
     print("safe to exit.")
+    config_buttons("normal")
+    toggle_loading_bar(False)
 
 def upgrade(): # reverts to the fal version(before downgrading)
+    config_buttons("disabled")
+    toggle_loading_bar(True)
     if checkVersion() != "Not Downgraded":
         for f in files:
                 shutil.copyfile(f"open127/upgrade/{f}", f)
@@ -90,34 +96,60 @@ def upgrade(): # reverts to the fal version(before downgrading)
         return "already upgraded"
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
     print("safe to exit.")
+    config_buttons("normal")
+    toggle_loading_bar(False)
 
 def downgrade_to_124(): # downgrades to version 1.24
+    config_buttons("disabled")
+    toggle_loading_bar(True)
     if checkVersion() != "1.24":
         for f in files:
             shutil.copyfile(f"open127/downgrade/1.24/{f}", f)
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
     print("safe to exit.")
+    config_buttons("normal")
+    toggle_loading_bar(False)
 
 def downgrade_to_127(): # downgrades to version 1.27
+    config_buttons("disabled")
+    toggle_loading_bar(True)
     if checkVersion() != "1.27":
         for f in files:
             shutil.copyfile(f"open127/downgrade/1.27/{f}", f)
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
     print("safe to exit.")
+    config_buttons("normal")
+    toggle_loading_bar(False)
 
 def downgrade_to_129(): # downgrades to version 1.29
-
+    config_buttons("disabled")
+    toggle_loading_bar(True)
     if checkVersion() != "1.29":
         for f in files:
             shutil.copyfile(f"open127/downgrade/1.29/{f}", f)
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
     print("safe to exit.")
+    config_buttons("normal")
+    toggle_loading_bar(False)
 
 def run_threaded(func):
     threading.Thread(target=func, daemon=True).start()
+
+def config_buttons(state):
+    To124Button.configure(state=state)
+    To127Button.configure(state=state)
+    To129Button.configure(state=state)
+    UpgradeButton.configure(state=state)
+
+def toggle_loading_bar(bool):
+    if bool == True:
+        loadingBar.grid(row=2, sticky="ew", columnspan=5)
+        loadingBar.start()
+    else:
+        loadingBar.grid_remove()
 
 app.title("open127")
 #app.iconbitmap("")
@@ -136,8 +168,7 @@ To127Button.grid(row=3,column=1, pady=10,padx=5, sticky="ew")
 To129Button.grid(row=3,column=2, pady=10,padx=5, sticky="ew")
 UpgradeButton.grid(row=3,column=3, pady=10,padx=5, sticky="ew")
 
-loadingBar.grid(row=2, sticky="ew", columnspan=5)
-loadingBar.start()
+
 
 versionLabel.grid(row=0,column=0, pady=10,padx=5, sticky="ew", columnspan=4)
 versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red")
