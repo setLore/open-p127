@@ -15,14 +15,14 @@ A universal program, with the purpose of downgrading and upgrading GTA 5 to vers
 
 ### Installing
 
-* Download the p127.py file
+* Download the open127.py file
 * Put the file in your GTA 5 installation directory
 
 ### Running the program
 
 * Open your terminal
 * Go to the directory of the program and GTA 5 using the `cd` command
-* Run `python3 p127.py`
+* Run `python3 open127.py`
 
 ## Authors
 
