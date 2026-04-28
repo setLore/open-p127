@@ -9,7 +9,6 @@ try:
 except ImportError:
     print("customtkinter library not found. run 'pip3 install customtkinter' in your terminal")
     exit()
-isBackedUp = False
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("blue")
@@ -33,6 +32,22 @@ files = [
 size124 = 51248008
 size127 = 55559560
 size129 = 54944648
+
+sizes = {
+    "1.24": {
+        "GTA5.exe": 51248008,
+        "update.rpf": 397256704
+    },
+    "1.27": {
+        "GTA5.exe": 55559560,
+        "update.rpf": 352569344
+    },
+    "1.29": {
+        "GTA5.exe": 54944648,
+        "update.rpf": 397256704
+    }
+
+}
 
 # check if downgrade files exist
 def checkDowngradeFiles():
@@ -76,16 +91,16 @@ def backup():
                 #print(f"{f} already backed up.")
                 pass
             else:
+                print(f"backing up {f}...")
                 shutil.copyfile(f, f"open127/upgrade/{f}")
-                print(f"backed up {f}...")
-        isBackedUp = True
+
     else:
         print("downgraded, skipping backup")
     print("safe to exit.")
     config_buttons("normal")
     toggle_loading_bar(False)
 
-def upgrade(): # reverts to the fal version(before downgrading)
+def upgrade(): # reverts to the original version(the one before downgrading)
     config_buttons("disabled")
     toggle_loading_bar(True)
     if checkVersion() != "Not Downgraded":
@@ -145,11 +160,18 @@ def config_buttons(state):
     UpgradeButton.configure(state=state)
 
 def toggle_loading_bar(bool):
+    global isBusy
     if bool == True:
+        isBusy = True
         loadingBar.grid(row=2, sticky="ew", columnspan=5)
         loadingBar.start()
     else:
+        isBusy = False
         loadingBar.grid_remove()
+
+def on_close():
+    if isBusy != True:
+        app.destroy()
 
 app.title("open127")
 #app.iconbitmap("")
@@ -168,14 +190,16 @@ To127Button.grid(row=3,column=1, pady=10,padx=5, sticky="ew")
 To129Button.grid(row=3,column=2, pady=10,padx=5, sticky="ew")
 UpgradeButton.grid(row=3,column=3, pady=10,padx=5, sticky="ew")
 
-
-
 versionLabel.grid(row=0,column=0, pady=10,padx=5, sticky="ew", columnspan=4)
 versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red")
 
 handleDir()
 time.sleep(0.01)
+
 run_threaded(backup)
 time.sleep(0.01)
+
 checkDowngradeFiles()
+
+app.protocol("WM_DELETE_WINDOW", on_close)
 app.mainloop()
