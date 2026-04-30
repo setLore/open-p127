@@ -45,6 +45,7 @@ sizes = {
 
 # check if downgrade files exist
 def checkDowngradeFiles():
+    setUIBusy(True)
     versions = ["1.24", "1.27", "1.29"]
     for v in versions:
         for f in files:
@@ -52,6 +53,7 @@ def checkDowngradeFiles():
                 pass
             else:
                 print(f"file {f} not found?")
+    setUIBusy(False)
 
 # check version func, returns version as string
 def checkVersion():
@@ -85,7 +87,6 @@ def backup():
 
     else:
         print("downgraded, skipping backup")
-    print("safe to exit.")
     setUIBusy(False)
 
 def upgrade(): # reverts to the original version(the one before downgrading)
@@ -95,9 +96,8 @@ def upgrade(): # reverts to the original version(the one before downgrading)
                 shutil.copyfile(f"open127/upgrade/{f}", f)
                 print(f"reverting {f}")
     else: 
-        return "already upgraded"
+        print("already upgraded")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
-    print("safe to exit.")
     setUIBusy(False)
 
 def downgrade_to_124(): # downgrades to version 1.24
@@ -107,7 +107,6 @@ def downgrade_to_124(): # downgrades to version 1.24
             shutil.copyfile(f"open127/downgrade/1.24/{f}", f)
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
-    print("safe to exit.")
     setUIBusy(False)
 
 def downgrade_to_127(): # downgrades to version 1.27
@@ -117,7 +116,6 @@ def downgrade_to_127(): # downgrades to version 1.27
             shutil.copyfile(f"open127/downgrade/1.27/{f}", f)
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
-    print("safe to exit.")
     setUIBusy(False)
 
 def downgrade_to_129(): # downgrades to version 1.29
@@ -127,7 +125,6 @@ def downgrade_to_129(): # downgrades to version 1.29
             shutil.copyfile(f"open127/downgrade/1.29/{f}", f)
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
-    print("safe to exit.")
     setUIBusy(False)
 
 def run_threaded(func):
