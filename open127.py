@@ -70,6 +70,26 @@ def handleDir():
     os.makedirs("open127/downgrade/1.29/update", exist_ok=True)
     return "Folder initialization successful"
 
+def handleScemuCfg(preorderbonus='False', ign='Player', wintitle='Grand Theft Auto V', returningplayerbonus='False', stutterfix='True', audiofix='True', crashfix='True', admin='False'):
+    savepath = ""
+
+    if os.path.exists("scemu.cfg"):
+        with open("scemu.cfg", "r") as f:
+            for line in f:
+                if line.startswith("SavePath:"):
+                    savepath = line.strip()
+    with open("scemu.cfg", "w") as f:
+        f.write(f'PreOrderBonus: "{preorderbonus}"\n')
+        f.write(f'InGameName: "{ign}"\n')
+        f.write(f'{savepath}\n')
+        f.write(f'WindowTitleTomfoolery: "{wintitle}"\n')
+        f.write(f'ReturningPlayerBonus: "{returningplayerbonus}"\n')
+        f.write(f'StutterFix: "{stutterfix}"\n')
+        f.write(f'AudioFix: "{audiofix}"\n')
+        f.write(f'CrashFix: "{crashfix}"\n')
+        f.write(f'RunGameAsAdmin: "{admin}"\n')
+
+
 ### BACKUPS ###
 
 #check if backup exists and if it doesnt, back up fal non-downgraded files(kinda messy)
@@ -157,12 +177,16 @@ def setUIBusy(bool):
 app.title("open127")
 #app.iconbitmap("")
 app.geometry("600x400")
+
 To124Button = customtkinter.CTkButton(app, text="Downgrade to 1.24", height=35, width=150, command= lambda:run_threaded(downgrade_to_124))
 To127Button = customtkinter.CTkButton(app, text="Downgrade to 1.27", height=35, width=150, command= lambda:run_threaded(downgrade_to_127))
 To129Button = customtkinter.CTkButton(app, text="Downgrade to 1.29", height=35, width=150, command= lambda:run_threaded(downgrade_to_129))
 UpgradeButton = customtkinter.CTkButton(app, text="Upgrade" , height=35, width=150, command=lambda:run_threaded(upgrade))
+
 versionLabel = customtkinter.CTkLabel(app, text=f"Current Version: {checkVersion()}", corner_radius=5)
+
 loadingBar = customtkinter.CTkProgressBar(app, mode="indeterminate", height=20)
+
 app.grid_rowconfigure(1, weight=1)
 app.grid_columnconfigure((0,1,2), weight = 1)
 
