@@ -89,6 +89,14 @@ def handleScemuCfg(preorderbonus='False', ign='Player', wintitle='Grand Theft Au
         f.write(f'CrashFix: "{crashfix}"\n')
         f.write(f'RunGameAsAdmin: "{admin}"\n')
 
+def readScemuCfg():
+    config = {}
+    with open("scemu.cfg", "r") as f:
+        for line in f:
+            if ":" in line and not line.startswith("#"):
+                key,value = line.strip().split(": ", 1)
+                config[key] = value.strip('"')
+    return config
 
 ### BACKUPS ###
 
@@ -208,3 +216,6 @@ checkDowngradeFiles()
 
 app.protocol("WM_DELETE_WINDOW", on_close)
 app.mainloop()
+
+handleScemuCfg()
+print(readScemuCfg())
