@@ -190,6 +190,9 @@ To124Button = customtkinter.CTkButton(app, text="Downgrade to 1.24", height=35, 
 To127Button = customtkinter.CTkButton(app, text="Downgrade to 1.27", height=35, width=150, command= lambda:run_threaded(downgrade_to_127))
 To129Button = customtkinter.CTkButton(app, text="Downgrade to 1.29", height=35, width=150, command= lambda:run_threaded(downgrade_to_129))
 UpgradeButton = customtkinter.CTkButton(app, text="Upgrade" , height=35, width=150, command=lambda:run_threaded(upgrade))
+preOrderCheckbox = customtkinter.CTkCheckBox(app, text="test checkbox")
+testCheckbox = customtkinter.CTkCheckBox(app, text="test2 checkbox")
+
 
 versionLabel = customtkinter.CTkLabel(app, text=f"Current Version: {checkVersion()}", corner_radius=5)
 
@@ -202,6 +205,8 @@ To124Button.grid(row=3,column=0, pady=10,padx=5, sticky="ew")
 To127Button.grid(row=3,column=1, pady=10,padx=5, sticky="ew")
 To129Button.grid(row=3,column=2, pady=10,padx=5, sticky="ew")
 UpgradeButton.grid(row=3,column=3, pady=10,padx=5, sticky="ew")
+preOrderCheckbox.grid(row=1, pady=10,padx=5, sticky="ew")
+testCheckbox.grid(row=2, pady=10,padx=5, sticky="ew")
 
 versionLabel.grid(row=0,column=0, pady=10,padx=5, sticky="ew", columnspan=4)
 versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red")
