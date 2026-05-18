@@ -1,3 +1,6 @@
+# TO-DO
+# multi-threaded downloading of files needed to downgrade and tracking of its progress via a loading bar
+
 import os
 import hashlib
 import shutil
