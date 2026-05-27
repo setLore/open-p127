@@ -12,10 +12,17 @@ try:
 except ImportError:
     print("customtkinter library not found. run 'pip3 install customtkinter' in your terminal")
     exit()
+try:
+    import requests
+except ImportError:
+    print("requests library not found. run 'pip3 install requests' in your terminal")
+    exit()
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("blue")
 app = customtkinter.CTk()
+
+downloadLink = r"https://pub-a57af296c0df4b2aa06445a4064b40de.r2.dev/downgrade/"
 
 # downgrade/upgrade file list
 files = [
@@ -197,6 +204,15 @@ def saveSettings():
         admin=config["RunGameAsAdmin"]
     )
 
+def downloadFile(ver,name):
+    if not os.path.exists(f"open127/downgrade/{ver}/{name}"):
+        file = open(f"open127/downgrade/{ver}/{name}", "wb")
+        response = requests.get(f"{downloadLink}{ver}/{name}", stream=True)
+        for chunk in response.iter_content(chunk_size=8192):
+            file.write(chunk)
+        file.close()
+    else:
+        pass
 
 app.title("open127")
 #app.iconbitmap("")
