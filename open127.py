@@ -55,15 +55,22 @@ sizes = {
 
 # check if downgrade files exist
 def checkDowngradeFiles():
-    setUIBusy(True)
     versions = ["1.24", "1.27", "1.29"]
     for v in versions:
-        for f in files:
-            if os.path.exists(f"open127/downgrade/{v}/{f}"):
-                pass
-            else:
-                print(f"file {f} not found?")
-    setUIBusy(False)
+        if all(os.path.exists(f"open127/downgrade/{v}/{f}") for f in files):
+            if v == "1.24":
+                To124Button.configure(state = "normal")
+            elif v == "1.27":
+                To127Button.configure(state = "normal")
+            elif v == "1.29":
+                To129Button.configure(state = "normal")
+        else:
+            if v == "1.24":
+                To124Button.configure(state = "disabled")
+            elif v == "1.27":
+                To127Button.configure(state = "disabled")
+            elif v == "1.29":
+                To129Button.configure(state = "disabled")
 
 # check version func, returns version as string
 def checkVersion():
@@ -126,6 +133,7 @@ def backup():
     else:
         print("downgraded, skipping backup")
     setUIBusy(False)
+    checkDowngradeFiles()
 
 def upgrade(): # reverts to the original version(the one before downgrading)
     setUIBusy(True)
@@ -137,6 +145,7 @@ def upgrade(): # reverts to the original version(the one before downgrading)
         print("already upgraded")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
     setUIBusy(False)
+    checkDowngradeFiles()
 
 def downgrade_to_124(): # downgrades to version 1.24
     setUIBusy(True)
@@ -146,6 +155,7 @@ def downgrade_to_124(): # downgrades to version 1.24
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
     setUIBusy(False)
+    checkDowngradeFiles()
 
 def downgrade_to_127(): # downgrades to version 1.27
     setUIBusy(True)
@@ -155,6 +165,7 @@ def downgrade_to_127(): # downgrades to version 1.27
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
     setUIBusy(False)
+    checkDowngradeFiles()
 
 def downgrade_to_129(): # downgrades to version 1.29
     setUIBusy(True)
@@ -164,6 +175,7 @@ def downgrade_to_129(): # downgrades to version 1.29
             print(f"downgraded {f}")
     versionLabel.configure(fg_color="green" if checkVersion() != "Not Downgraded" else "red", text=f"Current Version: {checkVersion()}")
     setUIBusy(False)
+    checkDowngradeFiles()
 
 def run_threaded(func):
     threading.Thread(target=func, daemon=True).start()
@@ -181,7 +193,7 @@ def setUIBusy(bool):
         To129Button.configure(state="disabled")
         UpgradeButton.configure(state="disabled")
 
-        loadingBar.grid(row=2, sticky="ew", columnspan=5)
+        loadingBar.grid(row=3, sticky="ew", columnspan=5)
         loadingBar.start()
     else:
         isBusy = False
@@ -227,10 +239,8 @@ config = readScemuCfg()
 preorder_var = customtkinter.StringVar(value=config["PreOrderBonus"])
 returning_var = customtkinter.StringVar(value=config["ReturningPlayerBonus"])
 
-
 preOrderCheckbox = customtkinter.CTkCheckBox(app, text="Pre-Order Bonus", variable=preorder_var, onvalue="True", offvalue="False",command=saveSettings, width=175)
 returningPlayerCheckbox = customtkinter.CTkCheckBox(app, text="Returning Player Bonus", variable=returning_var, onvalue="True", offvalue="False", command=saveSettings, width=175)
-
 
 versionLabel = customtkinter.CTkLabel(app, text=f"Current Version: {checkVersion()}", corner_radius=5)
 
